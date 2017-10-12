@@ -13,6 +13,9 @@ services:
       os-admin-hostname: keystone.example.com
       os-internal-hostname: keystone.example.com
       os-public-hostname: keystone.example.com
+      # LP: #1711354
+      ssl_ca: |
+        Cg==
       ssl_cert: |
         LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN3akNDQWFxZ0F3SUJBZ0lKQUppR2tCRWFO
         MEx3TUEwR0NTcUdTSWIzRFFFQkN3VUFNQmt4RnpBVkJnTlYKQkFNTURuRjFhV05yTFcxaFlYTXVi
