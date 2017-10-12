@@ -13,6 +13,9 @@ services:
       os-admin-hostname: glance.example.com
       os-internal-hostname: glance.example.com
       os-public-hostname: glance.example.com
+      os-admin-network: 192.168.151.0/24
+      os-internal-network: 192.168.151.0/24
+      os-public-network: 192.168.152.0/24
       ssl_cert: |
         LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN3akNDQWFxZ0F3SUJBZ0lKQUppR2tCRWFO
         MEx3TUEwR0NTcUdTSWIzRFFFQkN3VUFNQmt4RnpBVkJnTlYKQkFNTURuRjFhV05yTFcxaFlYTXVi
