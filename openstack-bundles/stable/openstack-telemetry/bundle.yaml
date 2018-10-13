@@ -1,0 +1,332 @@
+machines:
+  '0':
+    series: bionic
+  '1':
+    series: bionic
+  '2':
+    series: bionic
+  '3':
+    series: bionic
+relations:
+- - nova-compute:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:amqp
+  - rabbitmq-server:amqp
+- - keystone:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:identity-service
+  - keystone:identity-service
+- - glance:identity-service
+  - keystone:identity-service
+- - neutron-api:identity-service
+  - keystone:identity-service
+- - neutron-openvswitch:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - neutron-api:shared-db
+  - mysql:shared-db
+- - neutron-api:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - glance:shared-db
+  - mysql:shared-db
+- - glance:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:image-service
+  - glance:image-service
+- - nova-compute:image-service
+  - glance:image-service
+- - nova-cloud-controller:cloud-compute
+  - nova-compute:cloud-compute
+- - nova-cloud-controller:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:quantum-network-service
+  - neutron-gateway:quantum-network-service
+- - nova-compute:neutron-plugin
+  - neutron-openvswitch:neutron-plugin
+- - neutron-openvswitch:amqp
+  - rabbitmq-server:amqp
+- - openstack-dashboard:identity-service
+  - keystone:identity-service
+- - nova-cloud-controller:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:neutron-api
+  - neutron-api:neutron-api
+- - cinder:image-service
+  - glance:image-service
+- - cinder:amqp
+  - rabbitmq-server:amqp
+- - cinder:identity-service
+  - keystone:identity-service
+- - cinder:cinder-volume-service
+  - nova-cloud-controller:cinder-volume-service
+- - cinder-ceph:storage-backend
+  - cinder:storage-backend
+- - ceph-mon:client
+  - nova-compute:ceph
+- - nova-compute:ceph-access
+  - cinder-ceph:ceph-access
+- - cinder:shared-db
+  - mysql:shared-db
+- - ceph-mon:client
+  - cinder-ceph:ceph
+- - ceph-mon:client
+  - glance:ceph
+- - ceph-osd:mon
+  - ceph-mon:osd
+- - ntp:juju-info
+  - nova-compute:juju-info
+- - ntp:juju-info
+  - neutron-gateway:juju-info
+- - ceph-radosgw:mon
+  - ceph-mon:radosgw
+- - ceph-radosgw:identity-service
+  - keystone:identity-service
+- - ceilometer:amqp
+  - rabbitmq-server:amqp
+- - ceilometer-agent:ceilometer-service
+  - ceilometer:ceilometer-service
+- - ceilometer:identity-notifications
+  - keystone:identity-notifications
+- - ceilometer-agent:nova-ceilometer
+  - nova-compute:nova-ceilometer
+- - aodh:shared-db
+  - mysql:shared-db
+- - aodh:identity-service
+  - keystone:identity-service
+- - aodh:amqp
+  - rabbitmq-server:amqp
+- - gnocchi:storage-ceph
+  - ceph-mon:client
+- - gnocchi:shared-db
+  - mysql:shared-db
+- - gnocchi:amqp
+  - rabbitmq-server:amqp
+- - gnocchi:coordinator-memcached
+  - memcached:cache
+- - gnocchi:metric-service
+  - ceilometer:metric-service
+- - gnocchi:identity-service
+  - keystone:identity-service
+- - ceilometer:identity-credentials
+  - keystone:identity-credentials
+series: bionic
+services:
+  aodh:
+    annotations:
+      gui-x: '1500'
+      gui-y: '0'
+    charm: cs:aodh-15
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+    to:
+    - lxd:0
+  ceilometer:
+    annotations:
+      gui-x: '1250'
+      gui-y: '0'
+    charm: cs:ceilometer-254
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+    to:
+    - lxd:2
+  ceilometer-agent:
+    annotations:
+      gui-x: '1250'
+      gui-y: '500'
+    charm: cs:ceilometer-agent-245
+    num_units: 0
+  ceph-mon:
+    annotations:
+      gui-x: '750'
+      gui-y: '500'
+    charm: cs:ceph-mon-26
+    num_units: 3
+    options:
+      expected-osd-count: 3
+      source: cloud:bionic-rocky
+    to:
+    - lxd:1
+    - lxd:2
+    - lxd:3
+  ceph-osd:
+    annotations:
+      gui-x: '1000'
+      gui-y: '500'
+    charm: cs:ceph-osd-269
+    num_units: 3
+    options:
+      osd-devices: /dev/sdb
+      source: cloud:bionic-rocky
+    to:
+    - '1'
+    - '2'
+    - '3'
+  ceph-radosgw:
+    annotations:
+      gui-x: '1000'
+      gui-y: '250'
+    charm: cs:ceph-radosgw-259
+    num_units: 1
+    options:
+      source: cloud:bionic-rocky
+    to:
+    - lxd:0
+  cinder:
+    annotations:
+      gui-x: '750'
+      gui-y: '0'
+    charm: cs:cinder-273
+    num_units: 1
+    options:
+      block-device: None
+      glance-api-version: 2
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - lxd:1
+  cinder-ceph:
+    annotations:
+      gui-x: '750'
+      gui-y: '250'
+    charm: cs:cinder-ceph-234
+    num_units: 0
+  glance:
+    annotations:
+      gui-x: '250'
+      gui-y: '0'
+    charm: cs:glance-268
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - lxd:2
+  gnocchi:
+    annotations:
+      gui-x: '1500'
+      gui-y: '250'
+    charm: cs:gnocchi-11
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+    to:
+    - lxd:1
+  keystone:
+    annotations:
+      gui-x: '500'
+      gui-y: '0'
+    charm: cs:keystone-283
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - lxd:3
+  memcached:
+    annotations:
+      gui-x: '1500'
+      gui-y: '500'
+    charm: cs:memcached-21
+    num_units: 1
+    to:
+    - lxd:2
+  mysql:
+    annotations:
+      gui-x: '0'
+      gui-y: '250'
+    charm: cs:percona-cluster-269
+    num_units: 1
+    options:
+      innodb-buffer-pool-size: 256M
+      max-connections: 1000
+    to:
+    - lxd:0
+  neutron-api:
+    annotations:
+      gui-x: '500'
+      gui-y: '500'
+    charm: cs:neutron-api-262
+    num_units: 1
+    options:
+      flat-network-providers: physnet1
+      neutron-security-groups: true
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - lxd:1
+  neutron-gateway:
+    annotations:
+      gui-x: '0'
+      gui-y: '0'
+    charm: cs:neutron-gateway-253
+    num_units: 1
+    options:
+      bridge-mappings: physnet1:br-ex
+      data-port: br-ex:eno2
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - '0'
+  neutron-openvswitch:
+    annotations:
+      gui-x: '250'
+      gui-y: '500'
+    charm: cs:neutron-openvswitch-251
+    num_units: 0
+  nova-cloud-controller:
+    annotations:
+      gui-x: '0'
+      gui-y: '500'
+    charm: cs:nova-cloud-controller-311
+    num_units: 1
+    options:
+      network-manager: Neutron
+      openstack-origin: cloud:bionic-rocky
+      worker-multiplier: 0.25
+    to:
+    - lxd:2
+  nova-compute:
+    annotations:
+      gui-x: '250'
+      gui-y: '250'
+    charm: cs:nova-compute-287
+    num_units: 3
+    options:
+      config-flags: default_ephemeral_format=ext4
+      enable-live-migration: true
+      enable-resize: true
+      migration-auth-type: ssh
+      openstack-origin: cloud:bionic-rocky
+    to:
+    - '1'
+    - '2'
+    - '3'
+  ntp:
+    annotations:
+      gui-x: '1000'
+      gui-y: '0'
+    charm: cs:ntp-27
+    num_units: 0
+  openstack-dashboard:
+    annotations:
+      gui-x: '500'
+      gui-y: '-250'
+    charm: cs:openstack-dashboard-266
+    num_units: 1
+    options:
+      openstack-origin: cloud:bionic-rocky
+    to:
+    - lxd:3
+  rabbitmq-server:
+    annotations:
+      gui-x: '500'
+      gui-y: '250'
+    charm: cs:rabbitmq-server-78
+    num_units: 1
+    options:
+      source: cloud:bionic-rocky
+    to:
+    - lxd:0
